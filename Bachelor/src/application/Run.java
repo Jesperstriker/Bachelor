@@ -20,7 +20,7 @@ public class Run {
 //	static String user = "bach2";
 	static String user = "jespe";
 	//Enter xml model path
-	static String modelLocation = "C:/Users/" + user + "/workspace/Bachelor/src/LogBased/XMLModels/SimpleBuildingv2.xml";
+	static String modelLocation = "C:/Users/" + user + "/Documents/7.Semester/Bachelor/project/Bachelor/src/LogBased/XMLModels/SimpleBuildingv2.xml";
 	//Enter log data output path
 	static String logdataLocation = "C:/Users/" + user + "/Documents/7.Semester/Bachelor/Code/LogBased/Logdata/logdata.txt";
 	//Enter path for removed log entries (eg. tailgating violations)
