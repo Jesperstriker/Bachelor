@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -114,7 +115,17 @@ public class Tools {
 				boolean door = false;		// initiate flags.
 				boolean logged = false;
 				boolean hasRole = true;
+				int time = 0;
+    			
+				HashMap<String, String> map = JavaAPI.getMetrics(m, nodelabel, successor);
+    			//Finds the time from the node to the successor
+				for (String key : map.keySet()) {
+    				if (key.equals("time")){
+    					time = Integer.parseInt(map.get(key));
+    				}
+    			}
 				
+    			
 				if (!policies.isEmpty())
 				{
 					for (String policy : policies)
@@ -122,6 +133,7 @@ public class Tools {
 						p.setName(policy);
 		    			HashSet<String> credentials = JavaAPI.getCredentials(m, policy);
 		    			HashSet<String> actions = JavaAPI.getActions(m, policy);
+		    			
 		    			
 		    			for (String credential : credentials)
 		    			{
@@ -162,6 +174,7 @@ public class Tools {
 					{
 						succ = new Node(successor);
 						addedNodes.put(successor, succ);
+						
 					}
 					
 					else if (door)		//New: Make door into edge. Node for why this ugly implementation works can be found in .txt.
@@ -169,6 +182,7 @@ public class Tools {
 						succ = null;
 						for (String successor2 : JavaAPI.getSuccessors(m, successor))
 						{
+							
 							if (!addedNodes.containsKey(successor2))
 							{
 								succ = new Node(successor2);
@@ -179,22 +193,28 @@ public class Tools {
 								
 								succ = addedNodes.get(successor2); 
 							}
+							//If a door, add the time from the door to the next successor
+							map = JavaAPI.getMetrics(m, successor, successor2);
+			    			for (String key : map.keySet()) {
+			    				if (key.equals("time")){
+			    					time += Integer.parseInt(map.get(key));
+			    				}
+			    			}
+							
 							successor = successor2;
 						}
 
 					}
 					else { succ = addedNodes.get(successor); }
 					
+					
+					
 					Connection c = new Connection(p, succ);
+					c.setTime(time);
+					
 
 					n.addSuccessor(succ.getName(),c);; 
-				
-					HashMap<String, String> map = JavaAPI.getMetrics(m, nodelabel, succ.getName());
-	    			
-	    			for (String key : map.keySet()) {
-	    				System.out.println("Metrics: "+key+" = "+map.get(key));
-	    			}
-				
+				//System.out.println("from: "+n.getName()+" to: "+successor);
 				}		
 			}
 
@@ -203,6 +223,7 @@ public class Tools {
 			
 			a.addNode(n);
     	}
+		System.out.println(a.toString());
 		if(simplify)
 		{
 			return simplifyAutomaton(a);

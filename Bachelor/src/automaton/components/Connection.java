@@ -9,7 +9,7 @@ public class Connection
 {
 	private HashSet<Policy> p = new HashSet<Policy>();
 	private Node n;
-	
+	private int time;
 	public Connection(Policy p, Node n)
 	{
 		this.p.add(p);
@@ -36,8 +36,15 @@ public class Connection
 	}
 	
 	public String toString() {
-		String s = "    Connection: '" + n.getName() + "':\n" + p.toString();
+		String s = "    Connection: '" + n.getName() + "':\n" + p.toString() + " time: "+time;
 		return  s;
+	}
+	
+	public void setTime(int time){
+		this.time = time;
+	}
+	public int getTime(){
+		return this.time;
 	}
 	
 	public boolean equals(Connection c){

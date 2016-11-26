@@ -38,12 +38,12 @@
     <edge directed="true">
       <source>s</source>
       <target>R1</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="1"/></metrics>
     </edge>
 	<edge directed="true">
       <source>R1</source>
       <target>s</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="2"/></metrics>
     </edge>
     <edge directed="true">
       <source>R1</source>
@@ -53,112 +53,111 @@
 	<edge directed="true">
       <source>dR1R3</source>
       <target>R3</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="4"/></metrics>
     </edge>
     <edge directed="true">
       <source>R3</source>
       <target>dR3R1</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="5"/></metrics>
     </edge>
 	<edge directed="true">
       <source>dR3R1</source>
       <target>R1</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="6"/></metrics>
     </edge>
     <edge directed="true">
       <source>R1</source>
       <target>dR1R2</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="7"/></metrics>
     </edge>
 	<edge directed="true">
       <source>dR1R2</source>
       <target>R2</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="8"/></metrics>
     </edge>			
     <edge directed="true">
       <source>R2</source>
       <target>dR2R1</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="9"/></metrics>
     </edge>
 	<edge directed="true">
       <source>dR2R1</source>
       <target>R1</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="10"/></metrics>
     </edge>
     <edge directed="true">
       <source>R4</source>
       <target>R1</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="11"/></metrics>
     </edge>
 	<edge directed="true">
       <source>R1</source>
       <target>dR1R4</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="12"/></metrics>
     </edge>	
 	<edge directed="true">
       <source>dR1R4</source>
       <target>R4</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="13"/></metrics>
     </edge>	
 	<edge directed="true">
       <source>R6</source>
       <target>R4</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="14"/></metrics>
     </edge>	
 	<edge directed="true">
       <source>R4</source>
       <target>dR4R6</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="15"/></metrics>
     </edge>	
 	<edge directed="true">
       <source>dR4R6</source>
       <target>R6</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="16"/></metrics>
     </edge>
 	<edge directed="true">
       <source>R4</source>
       <target>dR4R5</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="17"/></metrics>
     </edge>	
 	<edge directed="true">
       <source>dR4R5</source>
       <target>R5</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="18"/></metrics>
     </edge>
 	<edge directed="true">
       <source>R5</source>
       <target>R4</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="19"/></metrics>
     </edge>
 	<edge directed="true">
       <source>R7</source>
       <target>R4</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="20"/></metrics>
     </edge>
 	<edge directed="true">
       <source>R4</source>
       <target>dR4R7</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="21"/></metrics>
     </edge>	
 	<edge directed="true">
       <source>dR4R7</source>
       <target>R7</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="22"/></metrics>
     </edge>
 	<edge directed="true">
       <source>R6</source>
       <target>dR6R7</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="23"/></metrics>
     </edge>
 	<edge directed="true">
       <source>dR6R7</source>
       <target>R7</target><metrics><metric
-        name="time" value="3"/></metrics>
+        name="time" value="24"/></metrics>
     </edge>
 	<edge directed="true">
       <source>R7</source>
-      <target>cR7S1</target><metrics><metric
-        name="time" value="3"/></metrics>
+      <target>cR7S1</target>
     </edge>
 	<edge directed="true">
       <source>cR7S1</source>
