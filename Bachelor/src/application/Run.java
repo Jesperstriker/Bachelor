@@ -37,6 +37,7 @@ public class Run {
 	//TREsPASS model definition
 	static Model model = JavaAPI.readFile(modelLocation);
 	
+	static Automaton basic;
 	
 	public static void main(String args[])
 	{
@@ -44,7 +45,7 @@ public class Run {
 		generateLogdata();
 		initActors();
 		//Logic.checkLog(bm, logdataLocation);
-		Logic2.checkLog2(bm, logdataLocation);
+		Logic2.checkLog2(bm, logdataLocation, basic);
 	}
 	
 	private static void initActors() {
@@ -74,9 +75,8 @@ public class Run {
 	{
 		HashMap<String,Role> roleHierarchy = Tools.createRoleHierarchy(model);
 		HashMap<String, Actor> actors = Tools.getActors(model, roleHierarchy);
-		Automaton basic = Tools.createAutomaton(model, null, false, roleHierarchy);		
+		basic = Tools.createAutomaton(model, null, false, roleHierarchy);		
 		HashMap<Role,Automaton> automata = new HashMap<Role,Automaton>();
-		
 		bm = new BuildingModel(automata, actors, roleHierarchy, basic);
 	}
 }
