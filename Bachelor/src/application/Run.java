@@ -30,9 +30,9 @@ public class Run {
 	static BuildingModel bm;
 	
 	//Logdata attributes
-	static int numberOfLogs = 10000;
-	static int cardViolations = 14;
-	static int tailgatingViolations = 28;
+	static int numberOfLogs = 10;
+	static int cardViolations = 1;
+	static int tailgatingViolations = 1;
 	
 	//TREsPASS model definition
 	static Model model = JavaAPI.readFile(modelLocation);
@@ -43,7 +43,8 @@ public class Run {
 		initBuilding();
 		generateLogdata();
 		initActors();
-		Logic.checkLog(bm, logdataLocation);
+		//Logic.checkLog(bm, logdataLocation);
+		Logic2.checkLog2(bm, logdataLocation);
 	}
 	
 	private static void initActors() {

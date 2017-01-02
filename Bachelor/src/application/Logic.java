@@ -50,7 +50,7 @@ public class Logic {
     			errorNumber++;
     			cardError++;
     			isCardFraud = true;
-    			//System.out.println(errorNumber + ": Card fraud detected: " + actor.getName());
+    			System.out.println(errorNumber + ": Card fraud detected: " + actor.getName());
     		}
     		
     		startPos = actor.getPosition();
@@ -86,7 +86,7 @@ public class Logic {
     				tailgatingError++;
     				if (!possibleLogs.isEmpty())
     				{
-        				//System.out.println(errorNumber + ": Tailgating problem for either:\n" + actor.getName());
+        				System.out.println(errorNumber + ": Tailgating problem for either:\n" + actor.getName());
         				for (UnknownLog ul : possibleLogs)
         				{
         					//System.out.println("or " + ul.toString());
@@ -94,7 +94,7 @@ public class Logic {
     				}
     				else
     				{
-        				//System.out.println(errorNumber + ": Tailgating detected: "  + actor.getName());
+        				System.out.println(errorNumber + ": Tailgating detected: "  + actor.getName());
 
     				}
     			}

@@ -223,9 +223,10 @@ public class Tools {
 			
 			a.addNode(n);
     	}
-		System.out.println(a.toString());
+		//System.out.println(a.toString());
 		if(simplify)
 		{
+			//System.out.println("simplified");
 			return simplifyAutomaton(a);
 		}
 		return a;

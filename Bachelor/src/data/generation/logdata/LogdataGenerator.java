@@ -11,7 +11,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -39,6 +41,7 @@ public class LogdataGenerator {
 		{
 			actors.add(actor);
 			actor.setAutomaton(automaton);
+			actor.setTimestamp(0);
 		}
 		
 		int timestamp = 0;
@@ -56,7 +59,8 @@ public class LogdataGenerator {
 		{
 			Actor currentActor = selectRandomActor(numberOfActors, actors);
 			Node currentNode = currentActor.getPosition();
-			
+			//printMap(actorTimestamps);
+				
 			//Select next Node from successors to current Node.
 			String nextNode;
 			if(currentNode.getSuccessors().isEmpty())
@@ -73,6 +77,20 @@ public class LogdataGenerator {
 			}
 			Connection nextCon = currentNode.getSuccessors().get(nextNode);
 			
+			int temp = timestamp;
+			
+			timestamp = timestamp+nextCon.getTime();
+			
+			if (temp < currentActor.getTimestamp()){
+				timestamp = temp;
+				for (Actor actor : actors){
+					if (actor.getTimestamp() <= temp){
+					actor.setTimestamp(temp);
+					}
+				}
+				continue;
+			}
+			
 			if(numberOfLogs + numberOfViolations - counter <= cardViolations - logdataError.size() && 
 					((nextCon.getFirstPolicy().isLogged() && !nextCon.isPersonSpecific()) || !actorTimestamps.containsKey(currentActor)))
 			{
@@ -87,7 +105,7 @@ public class LogdataGenerator {
 				if (actorTimestamps.containsKey(currentActor) && violate)
 				{
 					String time = actorTimestamps.get(currentActor).toString();
-					log = currentActor.getName() + " " + currentNode.getName() + " " + nextNode + " " + nextCon.getFirstPolicy().getName() + " " + time; //Log string
+					log = currentActor.getName() + " " + currentNode.getName() + " " + nextNode + " " + nextCon.getFirstPolicy().getName() + " " + timestamp; //Log string
 					cardViolations--;
 					
 					for (int i = logdata.size()-1; i >=0; i--)
@@ -117,14 +135,24 @@ public class LogdataGenerator {
 				logdata.add(log);
 				counter++;
 			}
-
 			currentActor.setPosition(nextCon.getNode());
+			currentActor.setTimestamp(timestamp);
 			
+			for (Actor actor : actors){
+				if (actor.getTimestamp() <= temp){
+				actor.setTimestamp(temp);
+				}
+			}
 			//Break statement is used instead of logdata.size so we don't constantly have to evaluate the length of the list.
 			if(counter - tailgatingViolations >= numberOfLogs) {
 				break;
 			}
-			timestamp++;
+			timestamp = temp+1;
+			
+			for (Actor actor : actors){
+				System.out.println(actor.getName()+" : "+actor.getPosition().getName()+" at time:"+actor.getTimestamp());
+			}
+			System.out.println("new iteration");
 		}
 		
 		//Exceptions should probably be handled differently
@@ -138,6 +166,7 @@ public class LogdataGenerator {
 			e.printStackTrace();
 		}
 	}
+	
 	private static boolean createViolation(int numberOfLogs, int counter, int cardViolations) 
 	{
 		if (cardViolations == 0)
@@ -213,6 +242,24 @@ public class LogdataGenerator {
 			Tools.WriteAndCreateFile(errorPath,errors);
 			Tools.WriteAndCreateFile(path, logdata);
 		} catch (IOException e) {}
+	}
+	
+	private static int changeTimestamp (int currentTimestamp, int timeConnection, int currentActorTimestamp){
+		//System.out.println(currentTimestamp+ ","+timeConnection+ ","+currentActorTimestamp );
+		if (currentTimestamp + timeConnection < currentActorTimestamp){
+		return currentActorTimestamp+timeConnection;
+	}
+	else 
+		return currentTimestamp+timeConnection;
+	}
+	
+	public static void printMap(Map mp) {
+	    Iterator it = mp.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry pair = (Map.Entry)it.next();
+	        System.out.println(pair.getKey() + " = " + pair.getValue());
+	        it.remove(); // avoids a ConcurrentModificationException
+	    }
 	}
 
 }
