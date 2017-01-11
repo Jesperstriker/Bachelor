@@ -39,7 +39,13 @@ public class Actor {
 	
 	public Set<String> getLocations(){return this.locations;}
 	public void addLocation(String location){this.locations.add(location);}
-
+	public void resetLocation(String location)
+	{
+		Set<String> loc = new HashSet<String>();
+		loc.add(location);
+		this.locations = loc;
+	}
+	
 	public String toString()
 	{
 		return name + ", " + role.toString();

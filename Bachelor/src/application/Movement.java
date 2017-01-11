@@ -7,12 +7,14 @@ public class Movement {
 	String locTarget;
 	Actor actor;
 	int time;
+	int edgeTime;
 	
-	public Movement(String locSource, String locTarget, Actor actor, int time){
+	public Movement(String locSource, String locTarget ,int edgeTime, Actor actor, int time){
 	this.locSource = locSource;
 	this.locTarget = locTarget;
 	this.actor = actor;
 	this.time = time;
+	this.edgeTime = edgeTime;
 	}
 	
 	public String getlocSource(){
