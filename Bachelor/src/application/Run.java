@@ -11,6 +11,8 @@ import TREsPASS.model.Model;
 import automaton.Automaton;
 import automaton.Tools;
 import data.generation.logdata.LogdataGenerator;
+import data.generation.logdata.LogDataGeneratorOld;
+
 import model.Actor;
 import model.BuildingModel;
 import model.Role;
@@ -42,10 +44,11 @@ public class Run {
 	public static void main(String args[])
 	{
 		initBuilding();
+
 		generateLogdata();
 		initActors();
-		//Logic.checkLog(bm, logdataLocation);
-		Logic2.checkLog2(bm, logdataLocation, basic);
+		Logic.checkLog(bm, logdataLocation);
+		//Logic2.checkLog2(bm, logdataLocation, basic);
 	}
 	
 	private static void initActors() {
@@ -69,6 +72,7 @@ public class Run {
 		Path path = Paths.get(logdataLocation);
 		Path errorPath = Paths.get(errorLogLocation);
 		LogdataGenerator.generateLogdata(bm, path,errorPath, numberOfLogs, tailgatingViolations, cardViolations);
+		//LogDataGeneratorOld.generateLogdataOld(bm, path, errorPath, numberOfLogs, tailgatingViolations, cardViolations);
 	}
 
 	private static void initBuilding()
