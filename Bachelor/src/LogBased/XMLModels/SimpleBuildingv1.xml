@@ -157,19 +157,23 @@
     </edge>
 	<edge directed="true">
       <source>R7</source>
-      <target>cR7S1</target>
+      <target>cR7S1</target><metrics><metric
+        name="time" value="1"/></metrics>
     </edge>
 	<edge directed="true">
       <source>cR7S1</source>
-      <target>S1</target>
+      <target>S1</target><metrics><metric
+        name="time" value="1"/></metrics>
     </edge>
 	<edge directed="true">
       <source>S1</source>
-      <target>cS1R7</target>
+      <target>cS1R7</target><metrics><metric
+        name="time" value="1"/></metrics>
     </edge>
 	<edge directed="true">
       <source>cS1R7</source>
-      <target>R7</target>
+      <target>R7</target><metrics><metric
+        name="time" value="1"/></metrics>
     </edge>	
   </edges>
   

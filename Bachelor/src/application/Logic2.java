@@ -19,8 +19,7 @@ import model.*;
 public class Logic2 {
 	static Set<Movement> movements = new HashSet<Movement>();
 
-	public static void checkLog2(BuildingModel bm, String filePath, Automaton enfa) {
-		HashMap<String, Node> nodes = enfa.getAllNodes();
+	public static void checkLog2(BuildingModel bm, String filePath) {
 		LogReader reader = new LogReader(filePath);
 		ArrayList<Log> currentLogs = new ArrayList<Log>();
 		int maxObserved = 0;
@@ -33,23 +32,24 @@ public class Logic2 {
 			currentLogs.add(log);
 
 		}
-		findActors(bm, maxObserved, nodes, currentLogs);
+		findActors(bm, maxObserved, currentLogs);
 	}
 
-	public static void findActors(BuildingModel bm, int maxObserved, HashMap<String, Node> nodes,
+	public static void findActors(BuildingModel bm, int maxObserved,
 			ArrayList<Log> currentLogs) {
+		HashMap<String, Node> nodes = bm.getENFA().getAllNodes();
 		// Timespan of the logs, from 0 to max observed
 		String s = "";
 		boolean flag = true;
 		for (Actor actor : bm.getActors().values()) {
 			if (flag) {
-				s = String.format("%-20s", actor.getName());
+				s = String.format("%-30s", actor.getName());
 				flag = false;
 			} else {
-				s = String.format("%s %-20s", s, actor.getName());
+				s = String.format("%s %-30s", s, actor.getName());
 			}
 		}
-		System.out.println(String.format("%s %-10s", s,"Time"));
+		System.out.println(String.format("%s %-20s", s,"Time"));
 
 		// If the t = to the time in the log, we have observed
 		// the actor at this place.
@@ -79,7 +79,6 @@ public class Logic2 {
 					i.remove();
 				}
 			}
-
 			printLocations(bm, t);
 		}
 
@@ -89,7 +88,7 @@ public class Logic2 {
 			HashMap<String, Node> nodes) {
 		boolean flag = false;
 		for (Log log : currentLogs) {
-			if (log.getCounter() == t) {
+			if (log.getCounter() == t && !log.getActorID().equals("Unknown")) {
 				Actor actor = bm.getActors().get(log.getActorID());
 				actor.resetLocation(log.getTo());
 				printLocations(bm, t);
@@ -124,7 +123,7 @@ public class Logic2 {
 					s1 = s1 + "," + location;
 				}
 			}
-				s = String.format("%s %-20s", s, s1);
+				s = String.format("%s %-30s", s, s1);
 			
 		}
 		System.out.println(String.format("%s %-10d", s,t));

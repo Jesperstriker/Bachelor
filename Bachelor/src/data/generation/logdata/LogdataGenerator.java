@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class LogdataGenerator {
+	private static HashMap<Integer, HashSet<Actor>> availableActors = new HashMap<Integer, HashSet<Actor>>();
 
 	// Data should be created from the non simplified automata (e-NFA)
 	public static void generateLogdata(BuildingModel bm, Path logdataFilePath, Path errorPath, int numberOfLogs,
@@ -34,7 +35,6 @@ public class LogdataGenerator {
 		// Initialize components
 		Automaton automaton = bm.getENFA();
 		HashSet<Actor> allActors = new HashSet<Actor>();
-		HashMap<Integer, HashSet<Actor>> availableActors = new HashMap<Integer, HashSet<Actor>>();
 		for (Actor actor : bm.getActors().values()) {
 			allActors.add(actor);
 			actor.setAutomaton(automaton);
@@ -42,11 +42,7 @@ public class LogdataGenerator {
 		}
 
 		int timestamp = 0;
-
 		availableActors.put(timestamp, allActors);
-
-		int numberOfActors = allActors.size();
-		// Used to check the number of logs created
 		int counter = 0;
 		// List of logs
 		List<String> logdata = new ArrayList<String>();
@@ -57,9 +53,8 @@ public class LogdataGenerator {
 		while (true) {
 
 			HashSet<Actor> actors = availableActors.get(timestamp);
-
+			// For all actors at available at time t
 			for (Actor currentActor : safe(actors)) {
-				System.out.println(currentActor);
 				Node currentNode = currentActor.getPosition();
 				String nextNode;
 				if (currentNode.getSuccessors().isEmpty()) {
@@ -71,84 +66,66 @@ public class LogdataGenerator {
 					}
 				}
 				Connection nextCon = currentNode.getSuccessors().get(nextNode);
-				Random rand = new Random();
-				int  n = rand.nextInt(100) + 1;
-				
-			if (n < 70){
-				if (nextCon.getFirstPolicy().isLogged() && nextCon.isPersonSpecific()) {
-					String log = currentActor.getName() + " " + currentNode.getName() + " " + nextNode + " "
-							+ nextCon.getFirstPolicy().getName() + " " + (timestamp + nextCon.getTime()); // Log
-					logdata.add(log);
-					counter++;
-					
-					if (availableActors.get(timestamp+nextCon.getTime()) == null) {
-						HashSet<Actor> newset = new HashSet<Actor>();
-						newset.add(currentActor);
-						availableActors.put(timestamp+nextCon.getTime(), newset);
-					} else {
-						availableActors.get(timestamp+nextCon.getTime()).add(currentActor);
-					}
-					
-					HashSet<Actor> tailgaters = checkLocation(allActors, currentNode, currentActor);
-					if (!tailgaters.isEmpty()) {
-						for (Actor tailgatingActors : tailgaters) {
-							if (tailgatingViolations == 0) break;
-							tailgatingActors.setPosition(nextCon.getNode());
-							tailgatingViolations--;
+
+				if (move()) {
+					if (nextCon.getFirstPolicy().isLogged() && nextCon.isPersonSpecific()) {
+						// Adds violations in case other actors are at the location of currentactor
+						//while also being available
+						boolean cardFraud = false;
+						HashSet<Actor> possibleViolaters = checkLocation(allActors, currentNode, currentActor);
+						for (Actor actor : possibleViolaters) {
+							if (tailgatingViolations > 0) {
+								actor.setPosition(nextCon.getNode());
+								addAvailableActor(timestamp, actor, nextCon.getTime());
+								tailgatingViolations--;
+							} else if (cardViolations > 0) {
+								actor.setPosition(nextCon.getNode());
+								addAvailableActor(timestamp, actor, nextCon.getTime());
+								cardViolations--;
+								cardFraud = true;
+							} else break;
 						}
-					}
-				} else if (nextCon.getFirstPolicy().isLogged()) {
-					String log = "Unknown " + currentNode.getName() + " " + nextNode + " "
-							+ nextCon.getFirstPolicy().getName() + " " + (timestamp + nextCon.getTime()); // Log
-																											// //
-																											// string
-					logdata.add(log);
-					counter++;
-					
-					if (availableActors.get(timestamp+nextCon.getTime()) == null) {
-						HashSet<Actor> newset = new HashSet<Actor>();
-						newset.add(currentActor);
-						availableActors.put(timestamp+nextCon.getTime(), newset);
-					} else {
-						availableActors.get(timestamp+nextCon.getTime()).add(currentActor);
-					}
-					
-					HashSet<Actor> tailgaters = checkLocation(allActors, currentNode, currentActor);
-					if (!tailgaters.isEmpty()) {
-						for (Actor tailgatingActors : tailgaters) {
-							if (tailgatingViolations == 0) break;
-							tailgatingActors.setPosition(nextCon.getNode());
-							tailgatingViolations--;
+						//Creates a log
+						String log = currentActor.getName() + " " + currentNode.getName() + " " + nextNode + " "
+								+ nextCon.getFirstPolicy().getName() + " " + (timestamp + nextCon.getTime()); // Log
+						logdata.add(log);
+						counter++;
+						
+						//Adds actor to the list when he/she is available again
+						if (cardFraud){
+							addAvailableActor(timestamp, currentActor, 1);	
+						} else {
+						addAvailableActor(timestamp, currentActor, nextCon.getTime());
 						}
+					} else if (nextCon.getFirstPolicy().isLogged()) {
+						
+						HashSet<Actor> possibleViolaters = checkLocation(allActors, currentNode, currentActor);
+						for (Actor actor : possibleViolaters) {
+							if (tailgatingViolations > 0) {
+								actor.setPosition(nextCon.getNode());
+								tailgatingViolations--;
+							} else break;
+						}
+						
+						String log = "Unknown " + currentNode.getName() + " " + nextNode + " "
+								+ nextCon.getFirstPolicy().getName() + " " + (timestamp + nextCon.getTime()); // Log																						// string
+						logdata.add(log);
+						counter++;
+						addAvailableActor(timestamp, currentActor, nextCon.getTime());
+								
 					}
-				}
-			}
-			else {
-				if (availableActors.get(timestamp+1) == null) {
-					HashSet<Actor> newset = new HashSet<Actor>();
-					newset.add(currentActor);
-					availableActors.put(timestamp+1, newset);
 				} else {
-					availableActors.get(timestamp+1).add(currentActor);
+					addAvailableActor(timestamp, currentActor, 1);
+					continue;
 				}
-			
-			}
 
 				currentActor.setPosition(nextCon.getNode());
-				if (availableActors.get(timestamp+nextCon.getTime()) == null) {
-					HashSet<Actor> newset = new HashSet<Actor>();
-					newset.add(currentActor);
-					availableActors.put(timestamp+nextCon.getTime(), newset);
-				} else {
-					// Add the actor to the next timestamp
-					// without changing the position
-					availableActors.get(timestamp+nextCon.getTime()).add(currentActor);
-				}
+				addAvailableActor(timestamp, currentActor, nextCon.getTime());
 			}
 
 			// Break statement is used instead of logdata.size so we don't
 			// constantly have to evaluate the length of the list.
-			if (counter - tailgatingViolations >= numberOfLogs) {
+			if (counter >= numberOfLogs) {
 				break;
 			}
 
@@ -157,26 +134,35 @@ public class LogdataGenerator {
 
 		// Exceptions should probably be handled differently
 		try {
-			if (numberOfViolations > 0) {
-				createViolations(tailgatingViolations, logdata, logdataError, errorLines, errorPath, logdataFilePath);
-			} else {
-				Tools.WriteAndCreateFile(logdataFilePath, logdata);
-			}
+			Tools.WriteAndCreateFile(logdataFilePath, logdata);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static HashSet<Actor> checkLocation(HashSet<Actor> actors, Node currentNode, Actor currentActor) {
-		HashSet<Actor> tailgaters = new HashSet<Actor>();
-		for (Actor actor : actors) {
-			if (actor.getPosition().equals(currentNode) && !(actor.equals(currentActor))) {
-				tailgaters.add(actor);
-			}
+	private static void addAvailableActor(int timestamp, Actor currentActor, int edgeTime) {
+		if (availableActors.get(timestamp + edgeTime) == null) {
+			HashSet<Actor> newset = new HashSet<Actor>();
+			newset.add(currentActor);
+			availableActors.put(timestamp + edgeTime, newset);
+		} else {
+			availableActors.get(timestamp + edgeTime).add(currentActor);
 		}
-		return tailgaters;
 	}
 
+	// Checks the position of the current actor, returns a list of other actors
+	// at the current actors' position
+	private static HashSet<Actor> checkLocation(HashSet<Actor> actors, Node currentNode, Actor currentActor) {
+		HashSet<Actor> possibleViolaters = new HashSet<Actor>();
+		for (Actor actor : actors) {
+			if (actor.getPosition().equals(currentNode) && !(actor.equals(currentActor))) {
+				possibleViolaters.add(actor);
+			}
+		}
+		return possibleViolaters;
+	}
+
+	// Used as a safety net incase actors is null. (noone available at time t).
 	private static HashSet<Actor> safe(HashSet<Actor> actors) {
 		return actors == null ? new HashSet<Actor>() : actors;
 	}
@@ -212,45 +198,10 @@ public class LogdataGenerator {
 
 	}
 
-	private static Actor selectRandomActor(int numberOfActors, List<Actor> actors) {
-		Random r = new Random();
-		int actorNumber = r.nextInt(numberOfActors);
-
-		return actors.get(actorNumber);
-	}
-
-	private static void createViolations(int numberOfViolations, List<String> logdata, List<String> logdataError,
-			HashSet<Integer> errorLines, Path errorPath, Path path) {
-		Random r = new Random();
-		int i = 0;
-		List<String> errors = new ArrayList<String>();
-		while (i < numberOfViolations) {
-			int removelog = r.nextInt(logdata.size());
-
-			if (!errorLines.contains(removelog)) {
-				errors.add(logdata.get(removelog));
-				logdata.set(removelog, "");
-				errorLines.add(removelog);
-				i++;
-			}
-		}
-
-		for (int j = logdata.size() - 1; j >= 0; j--) {
-			if (logdata.get(j).equals("")) {
-				logdata.remove(j);
-			}
-		}
-		logdata.addAll(logdataError);
-
-		logdata.sort((s1, s2) -> Integer.valueOf(s1.split(" ")[4]).compareTo(Integer.valueOf(s2.split(" ")[4])));
-
-		errors.sort((s1, s2) -> Integer.valueOf(s1.split(" ")[4]).compareTo(Integer.valueOf(s2.split(" ")[4])));
-
-		try {
-			Tools.WriteAndCreateFile(errorPath, errors);
-			Tools.WriteAndCreateFile(path, logdata);
-		} catch (IOException e) {
-		}
+	private static boolean move() {
+		Random rand = new Random();
+		int n = rand.nextInt(100) + 1;
+		return n > 70;
 	}
 
 }

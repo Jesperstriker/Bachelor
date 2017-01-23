@@ -56,7 +56,6 @@ public class LogDataGeneratorOld {
 			{
 				Actor currentActor = selectRandomActor(numberOfActors, actors);
 				Node currentNode = currentActor.getPosition();
-				//printMap(actorTimestamps);
 					
 				//Select next Node from successors to current Node.
 				String nextNode;

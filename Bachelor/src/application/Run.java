@@ -32,7 +32,7 @@ public class Run {
 	static BuildingModel bm;
 	
 	//Logdata attributes
-	static int numberOfLogs = 10;
+	static int numberOfLogs = 70;
 	static int cardViolations = 1;
 	static int tailgatingViolations = 1;
 	
@@ -47,8 +47,8 @@ public class Run {
 
 		generateLogdata();
 		initActors();
-		Logic.checkLog(bm, logdataLocation);
-		//Logic2.checkLog2(bm, logdataLocation, basic);
+		//Logic.checkLog(bm, logdataLocation);
+		Logic2.checkLog2(bm, logdataLocation);
 	}
 	
 	private static void initActors() {
