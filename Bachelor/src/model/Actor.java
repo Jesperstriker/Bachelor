@@ -12,19 +12,22 @@ public class Actor {
 	private Automaton a;
 	private Node position;
 	private int timestamp;
-	private Set<String> locations = new HashSet<String>();
+	private Set<Node> locations = new HashSet<Node>();
 	
 	public Actor(String name, Role role)
 	{
 		this.name = name;
 		this.role = role;
-		//Everybody starts at s
-		this.locations.add("s");
 	}
 
 	public Actor (String name)
 	{
 		this.name = name;
+	}
+	public Actor (String name,Role role, Node location){
+		this.name = name;
+		this.role = role;
+		this.locations.add(location);
 	}
 	
 	public Role getRole() { return role; }
@@ -37,11 +40,11 @@ public class Actor {
 	public int getTimestamp() {return timestamp;}
 	public void setTimestamp(int timestamp) {this.timestamp = timestamp;}
 	
-	public Set<String> getLocations(){return this.locations;}
-	public void addLocation(String location){this.locations.add(location);}
-	public void resetLocation(String location)
+	public Set<Node> getLocations(){return this.locations;}
+	public void addLocation(Node location){this.locations.add(location);}
+	public void resetLocation(Node location)
 	{
-		Set<String> loc = new HashSet<String>();
+		Set<Node> loc = new HashSet<Node>();
 		loc.add(location);
 		this.locations = loc;
 	}
@@ -59,6 +62,21 @@ public class Actor {
 	{
 		return a.hasTailgated(position, newPos);
 	}
+	
+	public String locationsToString(){
+			boolean flag = true;
+			String s1 = "";
+			for (Node location : this.locations) {
+				if (flag) {
+					s1 = s1+location.getName();
+					flag = false;
+				} else {
+					s1 = s1 + "," + location.getName();
+				}
+			}
+			return s1;
+	}
+	
 
 }
 

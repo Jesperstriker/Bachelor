@@ -20,7 +20,7 @@ public class Tools {
 	public static HashMap<String,Actor> getActors(Model m, HashMap<String,Role> rolehierarchy) {
 		//Returns all actors from a given TREsPASS model
 		HashMap<String,Actor> actors = new HashMap<String,Actor>();
-
+		
 		for(ArrayList<String> l : JavaAPI.getPredicateValues(m, "role"))
 		{
 			actors.put(l.get(1),new Actor(l.get(1), rolehierarchy.get(l.get(0))));

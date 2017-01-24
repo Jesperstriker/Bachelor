@@ -57,6 +57,8 @@ public class LogdataGenerator {
 			for (Actor currentActor : safe(actors)) {
 				Node currentNode = currentActor.getPosition();
 				String nextNode;
+				boolean cardFraud = false;
+				
 				if (currentNode.getSuccessors().isEmpty()) {
 					continue;
 				} else {
@@ -71,7 +73,6 @@ public class LogdataGenerator {
 					if (nextCon.getFirstPolicy().isLogged() && nextCon.isPersonSpecific()) {
 						// Adds violations in case other actors are at the location of currentactor
 						//while also being available
-						boolean cardFraud = false;
 						HashSet<Actor> possibleViolaters = checkLocation(allActors, currentNode, currentActor);
 						for (Actor actor : possibleViolaters) {
 							if (tailgatingViolations > 0) {
@@ -95,10 +96,10 @@ public class LogdataGenerator {
 						if (cardFraud){
 							addAvailableActor(timestamp, currentActor, 1);	
 						} else {
-						addAvailableActor(timestamp, currentActor, nextCon.getTime());
+							addAvailableActor(timestamp, currentActor, nextCon.getTime());
 						}
 					} else if (nextCon.getFirstPolicy().isLogged()) {
-						
+						//Creates a violation, only tailgating allowed in unknown log
 						HashSet<Actor> possibleViolaters = checkLocation(allActors, currentNode, currentActor);
 						for (Actor actor : possibleViolaters) {
 							if (tailgatingViolations > 0) {
@@ -106,7 +107,8 @@ public class LogdataGenerator {
 								tailgatingViolations--;
 							} else break;
 						}
-						
+						//Creates the unknown log. (In case you type in a password multiple
+						//actors know.
 						String log = "Unknown " + currentNode.getName() + " " + nextNode + " "
 								+ nextCon.getFirstPolicy().getName() + " " + (timestamp + nextCon.getTime()); // Log																						// string
 						logdata.add(log);
@@ -115,13 +117,19 @@ public class LogdataGenerator {
 								
 					}
 				} else {
+					//If the actor stays put. 
 					addAvailableActor(timestamp, currentActor, 1);
 					continue;
 				}
-
+				//In case of card fraud,this is handling the current actors' position.
+				if (!cardFraud){
 				currentActor.setPosition(nextCon.getNode());
 				addAvailableActor(timestamp, currentActor, nextCon.getTime());
-			}
+				} else {
+					addAvailableActor(timestamp, currentActor, 1);	
+				}
+				
+				}
 
 			// Break statement is used instead of logdata.size so we don't
 			// constantly have to evaluate the length of the list.

@@ -32,8 +32,8 @@ public class Run {
 	static BuildingModel bm;
 	
 	//Logdata attributes
-	static int numberOfLogs = 70;
-	static int cardViolations = 1;
+	static int numberOfLogs = 10;
+	static int cardViolations = 0;
 	static int tailgatingViolations = 1;
 	
 	//TREsPASS model definition

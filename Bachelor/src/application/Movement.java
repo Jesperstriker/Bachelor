@@ -1,33 +1,25 @@
 package application;
 
+import automaton.components.Node;
 import model.Actor;
 
 public class Movement {
-	String locSource;
-	String locTarget;
+	Node locTarget;
 	Actor actor;
 	int time;
 	int edgeTime;
 	
-	public Movement(String locSource, String locTarget ,int edgeTime, Actor actor, int time){
-	this.locSource = locSource;
+	public Movement( Node locTarget ,int edgeTime, Actor actor, int time){
 	this.locTarget = locTarget;
 	this.actor = actor;
 	this.time = time;
 	this.edgeTime = edgeTime;
 	}
 	
-	public String getlocSource(){
-		return locSource;
-	}
-	public void setlocSource(String locSource){
-		this.locSource = locSource;
-	}
-	
-	public String getlocTarget(){
+	public Node getlocTarget(){
 		return locTarget;
 	}
-	public void setlocTarget(String locTarget){
+	public void setlocTarget(Node locTarget){
 		this.locTarget = locTarget;
 	}
 	
